@@ -1,0 +1,30 @@
+<%- include('partials/head', { title }) %>
+<div class="auth-shell">
+  <div class="auth-panel fade-up">
+    <h1>Admin Login</h1>
+    <p>Sign in to generate and manage certificates.</p>
+
+    <% if (errors && errors.length) { %>
+      <div class="alert alert-error">
+        <% errors.forEach((error) => { %>
+          <p><%= error.msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <form action="/admin/login" method="POST" class="form-card">
+      <label>Username</label>
+      <input type="text" name="username" placeholder="admin" value="<%= old?.username || '' %>" required />
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="********" required minlength="8" />
+
+      <button type="submit" class="btn btn-primary w-full loading-btn" data-loading-text="Authenticating...">
+        Login
+      </button>
+    </form>
+
+    <a href="/" class="text-link">Back to Home</a>
+  </div>
+</div>
+<%- include('partials/foot') %>

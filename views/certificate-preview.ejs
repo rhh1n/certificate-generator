@@ -1,0 +1,44 @@
+<%- include('partials/head', { title }) %>
+<div class="preview-page">
+  <%- include('partials/alert') %>
+
+  <div class="preview-toolbar">
+    <a href="/admin/dashboard" class="btn btn-outline">Back to Dashboard</a>
+    <a href="/admin/certificates/<%= certificate.certificateId %>/download" class="btn btn-primary">Download PDF</a>
+  </div>
+
+  <article class="certificate-preview fade-up">
+    <div class="preview-ribbon top-ribbon">ONLINE CERTIFICATE GENERATION & VERIFICATION SYSTEM</div>
+    <div class="preview-header">
+      <% if (logoWebPath) { %>
+        <img src="<%= logoWebPath %>" alt="Srinivas Group Logo" class="preview-logo" />
+      <% } %>
+      <div>
+        <h3 class="preview-org">SRINIVAS GROUP</h3>
+        <p class="preview-sub-org">Samagra Gnana | ESTD: 1988</p>
+      </div>
+    </div>
+
+    <h1>Certificate of <%= certificate.certificateType %></h1>
+    <p>This certificate is proudly presented to</p>
+    <h2><%= certificate.studentName %></h2>
+    <p>
+      For <strong><%= certificate.certificateType.toLowerCase() %></strong> in
+      <strong><%= certificate.eventName %></strong>
+    </p>
+    <p>Course: <%= certificate.course %> | USN: <%= certificate.usn %></p>
+    <p>Event Date: <%= new Date(certificate.eventDate).toLocaleDateString() %></p>
+    <p>Issued Date: <%= new Date(certificate.issuedDate).toLocaleDateString() %></p>
+
+    <div class="preview-qr-wrap">
+      <img src="<%= previewQrDataUrl %>" alt="Verification QR Code" class="preview-qr" />
+      <p class="preview-qr-label">Scan to verify certificate</p>
+    </div>
+
+    <div class="cert-meta">
+      <span>Certificate ID: <%= certificate.certificateId %></span>
+    </div>
+    <div class="preview-ribbon bottom-ribbon">AUTHENTICATED | TRACKABLE | SECURE</div>
+  </article>
+</div>
+<%- include('partials/foot') %>

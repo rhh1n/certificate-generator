@@ -1,0 +1,105 @@
+<%- include('partials/head', { title }) %>
+<div class="app-shell">
+  <aside class="sidebar">
+    <h2>CertiTrust</h2>
+    <p>Admin: <%= currentAdmin.username %></p>
+    <a href="/admin/dashboard" class="sidebar-link active">Dashboard</a>
+    <a href="/verify" class="sidebar-link">Public Verify</a>
+    <a href="/admin/logout" class="sidebar-link danger">Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <%- include('partials/alert') %>
+
+    <section class="card fade-up">
+      <h1>Generate Certificate</h1>
+      <p>Fill in details to create a certificate and PDF.</p>
+
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <% errors.forEach((error) => { %>
+            <p><%= error.msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <form action="/admin/certificates" method="POST" class="grid-form" id="certificateForm">
+        <div>
+          <label>Student Name</label>
+          <input type="text" name="studentName" required value="<%= old.studentName || '' %>" />
+        </div>
+        <div>
+          <label>USN</label>
+          <input type="text" name="usn" required value="<%= old.usn || '' %>" />
+        </div>
+        <div>
+          <label>Course</label>
+          <input type="text" name="course" required value="<%= old.course || '' %>" />
+        </div>
+        <div>
+          <label>Event Name</label>
+          <input type="text" name="eventName" required value="<%= old.eventName || '' %>" />
+        </div>
+        <div>
+          <label>Certificate Type</label>
+          <select name="certificateType" required>
+            <% const selectedType = old.certificateType || ''; %>
+            <option value="">Select type</option>
+            <option value="Participation" <%= selectedType === 'Participation' ? 'selected' : '' %>>Participation</option>
+            <option value="Excellence" <%= selectedType === 'Excellence' ? 'selected' : '' %>>Excellence</option>
+            <option value="Completion" <%= selectedType === 'Completion' ? 'selected' : '' %>>Completion</option>
+            <option value="Achievement" <%= selectedType === 'Achievement' ? 'selected' : '' %>>Achievement</option>
+          </select>
+        </div>
+        <div>
+          <label>Date of Event</label>
+          <input type="date" name="eventDate" required value="<%= old.eventDate || '' %>" />
+        </div>
+        <button type="submit" class="btn btn-primary loading-btn" data-loading-text="Generating...">
+          Generate Certificate
+        </button>
+      </form>
+    </section>
+
+    <section class="card slide-in">
+      <div class="card-row">
+        <h2>Recent Certificates</h2>
+        <span class="muted"><%= recentCertificates.length %> records</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student</th>
+              <th>Type</th>
+              <th>Issued</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentCertificates.length) { %>
+              <tr>
+                <td colspan="5">No certificates yet.</td>
+              </tr>
+            <% } %>
+            <% recentCertificates.forEach((cert) => { %>
+              <tr>
+                <td><%= cert.certificateId %></td>
+                <td><%= cert.studentName %></td>
+                <td><%= cert.certificateType %></td>
+                <td><%= new Date(cert.issuedDate).toLocaleDateString() %></td>
+                <td>
+                  <a class="text-link" href="/admin/certificates/<%= cert.certificateId %>/preview">Preview</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+<script defer src="/js/dashboard.js"></script>
+<%- include('partials/foot') %>

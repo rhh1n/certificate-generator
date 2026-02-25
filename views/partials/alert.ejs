@@ -1,0 +1,5 @@
+<% if (alert) { %>
+  <div class="toast <%= alert.type === 'success' ? 'toast-success' : 'toast-error' %>">
+    <%= alert.message %>
+  </div>
+<% } %>

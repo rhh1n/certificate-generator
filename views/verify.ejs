@@ -1,0 +1,70 @@
+<%- include('partials/head', { title }) %>
+<section class="verify-shell">
+  <nav class="top-nav simple">
+    <a href="/" class="brand">CertiTrust</a>
+    <a href="/admin/login" class="btn btn-outline">Admin</a>
+  </nav>
+
+  <div class="verify-grid container">
+    <section class="card fade-up">
+      <h1>Verify Certificate</h1>
+      <p>Option 1: Enter Certificate ID manually.</p>
+
+      <form action="/verify" method="POST" class="verify-form" id="verifyForm">
+        <input
+          type="text"
+          name="certificateId"
+          id="certificateIdInput"
+          placeholder="e.g. A1B2C3D4E5F6"
+          value="<%= searchedId || '' %>"
+          required
+        />
+        <button type="submit" class="btn btn-primary loading-btn" data-loading-text="Checking...">Verify Now</button>
+      </form>
+
+      <hr />
+
+      <p>Option 2: Upload QR image to auto-open verification URL.</p>
+      <div class="qr-upload-wrap" id="qrUploadWrap">
+        <input type="file" id="qrImageInput" accept="image/*" />
+        <div class="qr-anim" aria-hidden="true"></div>
+        <small id="qrDecodeStatus">Waiting for QR image...</small>
+      </div>
+
+      <div class="history-box">
+        <h3>Search History</h3>
+        <ul id="searchHistory"></ul>
+      </div>
+    </section>
+
+    <section class="card slide-in">
+      <h2>Verification Result</h2>
+      <% if (!result) { %>
+        <div class="status status-neutral">No certificate checked yet.</div>
+      <% } %>
+
+      <% if (result && result.valid) { %>
+        <div class="status status-valid">Valid Certificate</div>
+        <div class="result-grid">
+          <p><strong>Certificate ID:</strong> <%= result.certificate.certificateId %></p>
+          <p><strong>Student Name:</strong> <%= result.certificate.studentName %></p>
+          <p><strong>USN:</strong> <%= result.certificate.usn %></p>
+          <p><strong>Course:</strong> <%= result.certificate.course %></p>
+          <p><strong>Event:</strong> <%= result.certificate.eventName %></p>
+          <p><strong>Type:</strong> <%= result.certificate.certificateType %></p>
+          <p><strong>Event Date:</strong> <%= new Date(result.certificate.eventDate).toLocaleDateString() %></p>
+          <p><strong>Issued:</strong> <%= new Date(result.certificate.issuedDate).toLocaleDateString() %></p>
+          <p><strong>Created:</strong> <%= new Date(result.certificate.createdAt).toLocaleString() %></p>
+        </div>
+      <% } %>
+
+      <% if (result && !result.valid) { %>
+        <div class="status status-invalid">Invalid Certificate</div>
+        <p><%= result.reason %></p>
+      <% } %>
+    </section>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script defer src="/js/verify.js"></script>
+<%- include('partials/foot') %>
