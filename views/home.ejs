@@ -1,7 +1,15 @@
 <%- include('partials/head', { title }) %>
-<section class="landing-bg">
-  <nav class="top-nav">
-    <div class="brand">CertiTrust</div>
+<section class="landing-bg live-landing" id="liveLanding">
+  <div class="landing-ambient" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+    <span class="orb orb-d"></span>
+    <span class="grid-glow"></span>
+  </div>
+
+  <nav class="top-nav landing-nav container">
+    <div class="brand brand-mark">CertiTrust</div>
     <div class="nav-links">
       <a href="/verify">Verify</a>
       <a href="/admin/login" class="btn btn-outline">Admin</a>
@@ -9,27 +17,35 @@
   </nav>
 
   <main class="hero container">
-    <div class="hero-copy fade-up">
-      <p class="badge">Online Certificate Generation & Verification System</p>
-      <h1>Generate secure certificates and verify them instantly.</h1>
+    <div class="hero-copy fade-up" data-parallax="soft">
+      <p class="badge">Professional Certificate Platform</p>
+      <h1>Premium Certificates. Instant Trust.</h1>
       <p>
-        Built for events, institutions, and competitions with UUID-backed IDs,
-        QR validation, and downloadable PDF certificates.
+        Issue and verify in seconds.
       </p>
       <div class="hero-actions">
         <a href="/verify" class="btn btn-primary">Verify Certificate</a>
         <a href="/admin/login" class="btn btn-outline">Admin Login</a>
       </div>
     </div>
-    <div class="hero-card slide-in">
-      <h3>System Highlights</h3>
-      <ul>
-        <li>Secure admin login with sessions</li>
-        <li>Unique certificate ID generation</li>
-        <li>PDF certificates with embedded QR</li>
-        <li>Manual and QR-based verification</li>
-      </ul>
+    <div class="hero-card slide-in tilt-card" id="tiltCard">
+      <h3>Core</h3>
+      <div class="stat-list">
+        <article>
+          <span>01</span>
+          <p>Unique secure IDs</p>
+        </article>
+        <article>
+          <span>02</span>
+          <p>Fast QR verification</p>
+        </article>
+        <article>
+          <span>03</span>
+          <p>Elegant PDF output</p>
+        </article>
+      </div>
     </div>
   </main>
 </section>
+<script defer src="/js/landing.js"></script>
 <%- include('partials/foot') %>

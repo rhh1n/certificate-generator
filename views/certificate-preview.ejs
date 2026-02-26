@@ -6,6 +6,10 @@
     <a href="/admin/dashboard" class="btn btn-outline">Back to Dashboard</a>
     <a href="/admin/certificates/<%= certificate.certificateId %>/download" class="btn btn-primary">Download PDF</a>
   </div>
+  <form action="/admin/certificates/<%= certificate.certificateId %>/send-email" method="POST" class="email-send-form">
+    <div class="email-target">Send to: <strong><%= certificate.studentEmail %></strong></div>
+    <button type="submit" class="btn btn-primary loading-btn" data-loading-text="Sending...">Send via Email</button>
+  </form>
 
   <article class="certificate-preview fade-up">
     <div class="preview-ribbon top-ribbon">ONLINE CERTIFICATE GENERATION & VERIFICATION SYSTEM</div>
@@ -19,24 +23,39 @@
       </div>
     </div>
 
-    <h1>Certificate of <%= certificate.certificateType %></h1>
-    <p>This certificate is proudly presented to</p>
-    <h2><%= certificate.studentName %></h2>
-    <p>
+    <h1 class="preview-title">Certificate of <%= certificate.certificateType %></h1>
+    <p class="preview-lead">This certificate is proudly presented to</p>
+    <h2 class="preview-student"><%= certificate.studentName %></h2>
+    <p class="preview-summary">
       For <strong><%= certificate.certificateType.toLowerCase() %></strong> in
       <strong><%= certificate.eventName %></strong>
     </p>
-    <p>Course: <%= certificate.course %> | USN: <%= certificate.usn %></p>
-    <p>Event Date: <%= new Date(certificate.eventDate).toLocaleDateString() %></p>
-    <p>Issued Date: <%= new Date(certificate.issuedDate).toLocaleDateString() %></p>
-
-    <div class="preview-qr-wrap">
-      <img src="<%= previewQrDataUrl %>" alt="Verification QR Code" class="preview-qr" />
-      <p class="preview-qr-label">Scan to verify certificate</p>
+    <div class="preview-facts">
+      <p>Course: <%= certificate.course %> | USN: <%= certificate.usn %></p>
+      <p>Event Date: <%= new Date(certificate.eventDate).toLocaleDateString() %></p>
+      <p>Issued Date: <%= new Date(certificate.issuedDate).toLocaleDateString() %></p>
     </div>
 
-    <div class="cert-meta">
-      <span>Certificate ID: <%= certificate.certificateId %></span>
+    <div class="preview-lower">
+      <div class="preview-proof-grid">
+        <div class="preview-qr-wrap">
+          <img src="<%= previewQrDataUrl %>" alt="Verification QR Code" class="preview-qr" />
+          <p class="preview-qr-label">Scan to verify</p>
+        </div>
+
+        <div class="preview-id-block">
+          <p>Certificate ID</p>
+          <h4><%= certificate.certificateId %></h4>
+        </div>
+
+        <div class="preview-seal-wrap">
+          <div class="preview-seal">
+            <span>VERIFIED</span>
+          </div>
+          <p class="preview-seal-label">Authenticity Seal</p>
+        </div>
+      </div>
+
     </div>
     <div class="preview-ribbon bottom-ribbon">AUTHENTICATED | TRACKABLE | SECURE</div>
   </article>

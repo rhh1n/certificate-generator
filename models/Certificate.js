@@ -14,6 +14,12 @@ const certificateSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    studentEmail: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true
+    },
     usn: {
       type: String,
       required: true,
@@ -48,7 +54,5 @@ const certificateSchema = new mongoose.Schema(
     timestamps: { createdAt: true, updatedAt: false }
   }
 );
-
-certificateSchema.index({ certificateId: 1 }, { unique: true });
 
 module.exports = mongoose.model('Certificate', certificateSchema);
