@@ -32,9 +32,15 @@ router.post(
 
     const expectedUsername = process.env.ADMIN_USERNAME;
     const hash = process.env.ADMIN_PASSWORD_HASH;
+    const plainPassword = process.env.ADMIN_PASSWORD;
 
     const usernameMatches = username === expectedUsername;
-    const passwordMatches = await bcrypt.compare(password, hash);
+    let passwordMatches = false;
+    if (hash) {
+      passwordMatches = await bcrypt.compare(password, hash);
+    } else if (plainPassword) {
+      passwordMatches = password === plainPassword;
+    }
 
     if (!usernameMatches || !passwordMatches) {
       return res.status(401).render('login', {

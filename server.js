@@ -32,6 +32,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Lightweight health endpoint for platform checks (no DB/session dependency).
+app.get('/health', (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 app.use(
   session({
     name: 'certi.sid',
@@ -75,16 +80,31 @@ app.use((err, req, res, next) => {
 });
 
 async function startServer() {
-  if (!process.env.MONGODB_URI || !process.env.SESSION_SECRET || !process.env.ADMIN_PASSWORD_HASH) {
+  if (
+    !process.env.MONGODB_URI ||
+    !process.env.SESSION_SECRET ||
+    !process.env.ADMIN_USERNAME ||
+    (!process.env.ADMIN_PASSWORD_HASH && !process.env.ADMIN_PASSWORD)
+  ) {
     throw new Error('Missing required environment variables. Check .env.example');
   }
 
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('Connected to MongoDB');
-
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
   });
+
+  // Connect to MongoDB with retry; don't crash process before healthcheck succeeds.
+  const connectWithRetry = async () => {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI);
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('MongoDB connection failed. Retrying in 5s:', error.message);
+      setTimeout(connectWithRetry, 5000);
+    }
+  };
+
+  connectWithRetry();
 }
 
 startServer().catch((error) => {
