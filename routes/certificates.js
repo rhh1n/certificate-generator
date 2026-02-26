@@ -46,15 +46,18 @@ function buildMailer() {
     throw new Error('Missing SMTP configuration.');
   }
 
-  return nodemailer.createTransport({
+ return nodemailer.createTransport({
   host,
   port,
   secure,
   auth: { user, pass },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000
+  requireTLS: true,
+  family: 4,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 20000
 });
+
 
 }
 
