@@ -15,6 +15,7 @@ const certificateRoutes = require('./routes/certificates');
 const publicRoutes = require('./routes/public');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
@@ -37,24 +38,20 @@ app.get('/health', (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-app.use(
-  session({
-    name: 'certi.sid',
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
-      ttl: 14 * 24 * 60 * 60
-    }),
-    cookie: {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: IS_PRODUCTION,
-      maxAge: 24 * 60 * 60 * 1000
-    }
-  })
-);
+app.use(session({
+  name: 'certi.sid',
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  proxy: true, // add this
+  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI, ttl: 14 * 24 * 60 * 60 }),
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
 
 app.use((req, res, next) => {
   res.locals.currentAdmin = req.session.admin || null;
