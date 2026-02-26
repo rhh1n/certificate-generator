@@ -47,11 +47,15 @@ function buildMailer() {
   }
 
   return nodemailer.createTransport({
-    host,
-    port,
-    secure,
-    auth: { user, pass }
-  });
+  host,
+  port,
+  secure,
+  auth: { user, pass },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000
+});
+
 }
 
 function renderCertificatePdf(doc, certificate, verifyUrl, qrImageBuffer, logo) {
@@ -343,6 +347,7 @@ router.post(
       const pdfBuffer = await buildCertificatePdfBuffer(certificate, verifyUrl, logo);
 
       const transporter = buildMailer();
+      await transporter.verify();
       await transporter.sendMail({
         from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: certificate.studentEmail,
