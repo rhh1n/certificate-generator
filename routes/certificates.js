@@ -325,7 +325,7 @@ router.get('/certificates/:certificateId/send-email', requireAuth, (req, res) =>
 router.post(
   '/certificates/:certificateId/send-email',
   requireAuth,
-  async (req, res, next) => {
+  async (req, res) => {
     try {
       const certificateId = cleanText(req.params.certificateId).toUpperCase();
 
@@ -377,14 +377,16 @@ router.post(
       };
       return res.redirect(`/admin/certificates/${certificateId}/preview`);
     } catch (error) {
-      if (error.message === 'Missing SMTP configuration.') {
-        req.session.alert = {
-          type: 'error',
-          message: 'Email is not configured. Add SMTP settings in .env.'
-        };
-        return res.redirect(`/admin/certificates/${cleanText(req.params.certificateId).toUpperCase()}/preview`);
-      }
-      return next(error);
+      console.error('Email send failed:', error);
+
+      const certificateId = cleanText(req.params.certificateId).toUpperCase();
+      const reason = error?.response || error?.message || 'Unknown SMTP error';
+
+      req.session.alert = {
+        type: 'error',
+        message: `Email failed: ${reason}`
+      };
+      return res.redirect(`/admin/certificates/${certificateId}/preview`);
     }
   }
 );
